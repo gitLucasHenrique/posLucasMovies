@@ -28,7 +28,7 @@ class MovieDB {
     print("db $path");
 
     // para testes vc pode deletar o banco
-    //await deleteDatabase(path);
+    //await deleteDatabase(path); /data/user/0/com.example.flutter_app/databases/movies.db
 
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
@@ -36,22 +36,19 @@ class MovieDB {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE movie(id TEXT PRIMARY KEY, nome TEXT'
-            ', urlFoto TEXT, nota TEXT, releaseDate TEXT, overview TEXT)');
+        'CREATE TABLE movie(id INTEGER PRIMARY KEY, title TEXT, urlFoto TEXT, vote_average TEXT, overview TEXT)');
   }
 
   Future<int> saveMovie(Movie movie) async {
     var dbClient = await db;
     final sql =
-        'insert or replace into movie (id,nome,urlFoto,nota,releaseDate,overview) VALUES '
-        '(?,?,?,?,?,?)';
+        'insert or replace into movie (id,title,urlFoto,vote_average,overview) VALUES (?,?,?,?,?)';
     print(sql);
     var id = await dbClient.rawInsert(sql, [
       movie.id,
-      movie.nome,
+      movie.title,
       movie.urlFoto,
       movie.vote_average,
-      movie.releaseDate,
       movie.overview
     ]);
     print('id: $id');

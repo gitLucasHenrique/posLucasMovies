@@ -20,12 +20,12 @@ class FavoritosService {
     var documentSnapshot = await document.get();
 
     if (!documentSnapshot.exists) {
-      print("${movie.nome}, adicionado nos favoritos");
+      print("${movie.title}, adicionado nos favoritos");
       document.setData(movie.toMap());
 
       return true;
     } else {
-      print("${movie.nome}, removido nos favoritos");
+      print("${movie.title}, removido nos favoritos");
       document.delete();
 
       return false;

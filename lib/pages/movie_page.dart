@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/domain/db/movie_db.dart';
 import 'package:flutter_app/domain/movie.dart';
 import 'package:flutter_app/widgets/star_display.dart';
 
 class MoviePage extends StatelessWidget {
   final Movie movie;
-
   const MoviePage(this.movie);
 
   @override
@@ -16,7 +16,7 @@ class MoviePage extends StatelessWidget {
           color: Colors.greenAccent
         ),
         title: Text(
-          movie.nome,
+          movie.title,
           style: TextStyle(
             color: Colors.greenAccent
           ),
@@ -27,7 +27,7 @@ class MoviePage extends StatelessWidget {
             icon: Icon(Icons.favorite,
                 color: Colors.white,
             ),
-            onPressed: () => _onClickFavoritar(context),
+            onPressed: () => _onClickFavoritar(context,movie),
           )
         ],
       ),
@@ -103,7 +103,15 @@ class MoviePage extends StatelessWidget {
       );
   }
 
-  _onClickFavoritar(context) {
-    print("favoritar clicked");
+  _onClickFavoritar(context, movie) async{
+    final db = MovieDB.getInstance();
+    final exists = await db.exists(movie);
+    if(exists){
+      db.deleteMovie(movie.id);
+      print("filme $movie retirado dos favoritos");
+    }else{
+      int id = await db.saveMovie(movie);
+      print("filme $movie favoritado");
+    }
   }
 }

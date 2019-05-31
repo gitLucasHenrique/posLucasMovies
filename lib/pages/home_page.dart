@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/domain/movie.dart';
-import 'package:flutter_app/domain/service/favorito_service.dart';
 import 'package:flutter_app/domain/service/movie_service.dart';
-import 'package:flutter_app/utils/nav.dart';
-import 'package:flutter_app/pages/movie_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_app/pages/favoritos_page.dart';
+import 'package:flutter_app/widgets/movies_gridView.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -44,7 +42,7 @@ class HomePage extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(image: AssetImage("assets/film.jpeg"),fit: BoxFit.fill)
           ),
-          child: _listBuilder(context),
+          child: _gridBuilder(context),
         ),
         Container(
           color: Colors.green[100],
@@ -55,38 +53,11 @@ class HomePage extends StatelessWidget {
   }
 
   _listBuilderFromBD(context) {
-
-    return Container(
-      padding: EdgeInsets.all(12),
-      child: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection("movies").snapshots(),
-          builder: (context, snapshot){
-            if(!snapshot.hasData){
-              return Container(
-                child: Center(
-                  child: Text("Carregando.."),
-                ),
-              );
-            }else if(snapshot.hasError) {
-              return Container(
-                child: Center(
-                  child: Text("erro ao carregar dados"),
-                ),
-              );
-            }
-            final List<Movie> movies = snapshot.data.documents.map((DocumentSnapshot document){
-              return Movie.fromJson(document.data);
-            }).toList();
-            return _listView(context, movies);
-          }
-      ),
-    );
+    return FavoritosPage();
   }
 
-  _listBuilder(context) {
+  _gridBuilder(context) {
     Future<List<Movie>> movies = MovieService.getMovies();
-    final service = FavoritosService();
-
     return FutureBuilder<List<Movie>>(
       future: movies,
       builder: (context, snapshot) {
@@ -96,53 +67,12 @@ class HomePage extends StatelessWidget {
           );
         }
         List<Movie> movies = snapshot.data;
-        return _listView(context,movies);
+        return _gridView(context,movies);
       },
     );
   }
 
-  _listView(context, List<Movie> movies) {
-    return GridView.builder(
-      padding: EdgeInsets.fromLTRB(55, 0, 55, 0),
-      itemCount: movies.length,
-      gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-      itemBuilder: (context, idx) {
-        final c = movies[idx];
-
-        return InkWell(
-          onTap: () => _onClickMovie(context, c),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black,
-                border: Border.all(color: Colors.black,
-                    style: BorderStyle.solid,
-                    width: 1)
-            ),
-            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-            child: Image.network(
-              c.urlFoto ?? "http://www.livroandroid.com.br/livro/movies/esportivos/Ferrari_FF.png",
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  _onClickMovie(context, Movie c) {
-    print("Movie $c");
-    push(context, MoviePage(c));
-  }
-
-  _listViewFromDB(BuildContext context, List<Movie> movies) {
-
-    return ListView.builder(
-      itemBuilder: (context, idx){
-        final m = movies[idx];
-        return Container(
-          child: Text(m.nome),
-        );
-      },
-    );
+  _gridView(context, List<Movie> movies) {
+    return MoviesGridView(movies);
   }
 }
