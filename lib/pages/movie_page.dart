@@ -48,7 +48,6 @@ class MoviePage extends StatelessWidget {
           pinned: false,
           flexibleSpace: new FlexibleSpaceBar(
             titlePadding: EdgeInsets.all(20.0),
-            title: Text("$movie",),
             centerTitle: true,
             background: Image.network(
               movie.urlFoto,

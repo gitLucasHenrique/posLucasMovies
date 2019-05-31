@@ -1,14 +1,18 @@
 class Movie {
   int id;
   String title;
-  String urlFoto;
+  String poster_path;
   double vote_average;
   String overview;
 
+  String get urlFoto {
+    return "https://image.tmdb.org/t/p/w300/"+poster_path;
+  }
+  
 Movie({
   this.id,
   this.title,
-  this.urlFoto,
+  this.poster_path,
   this.vote_average,
   this.overview,
 });
@@ -17,7 +21,7 @@ Movie({
     return Movie(
       id: json['id'] as int,
       title: json["title"] as String,
-      urlFoto: "https://image.tmdb.org/t/p/w300"+json["poster_path"],
+      poster_path: json["poster_path"],
       vote_average: double.parse(json["vote_average"].toString()),
       overview: json["overview"] as String,
     );
@@ -27,7 +31,7 @@ Movie({
     Map<String,dynamic> map = {
       "id": id,
       "title": title,
-      "urlFoto": urlFoto,
+      "poster_path": poster_path,
       "vote_average": vote_average,
       "overview": overview,
     };
@@ -39,6 +43,6 @@ Movie({
 
   @override
   String toString() {
-    return title;
+    return 'Movie{id: $id, title: $title, urlFoto $urlFoto}';
   }
 }
