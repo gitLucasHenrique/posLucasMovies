@@ -6,8 +6,7 @@ class Movie {
   String releaseDate;
   String overview;
 
-Movie(
-{
+Movie({
   this.id,
   this.nome,
   this.urlFoto,

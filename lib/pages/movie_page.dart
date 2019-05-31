@@ -10,9 +10,18 @@ class MoviePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(movie.nome),
-        backgroundColor: Colors.green,
+        iconTheme: IconThemeData(
+          color: Colors.greenAccent
+        ),
+        title: Text(
+          movie.nome,
+          style: TextStyle(
+            color: Colors.greenAccent
+          ),
+        ),
+        backgroundColor: Colors.black87,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.favorite,
@@ -28,6 +37,7 @@ class MoviePage extends StatelessWidget {
 
   _sliver(context) {
     return CustomScrollView(
+      physics: ClampingScrollPhysics(),
       slivers: <Widget>[
         SliverAppBar(
           backgroundColor: Colors.transparent,
@@ -37,12 +47,17 @@ class MoviePage extends StatelessWidget {
           floating: false,
           pinned: false,
           flexibleSpace: new FlexibleSpaceBar(
-            background: Image.network(movie.urlFoto,
-            fit: BoxFit.cover,
+            titlePadding: EdgeInsets.all(20.0),
+            title: Text("$movie",),
+            centerTitle: true,
+            background: Image.network(
+              movie.urlFoto,
+              fit: BoxFit.cover,
             ),
             collapseMode: CollapseMode.parallax,
           ),
-          expandedHeight: 350,
+          expandedHeight: 500,
+          brightness: Brightness.dark,
         ),
         SliverFillRemaining(
           child: _body(),
@@ -52,35 +67,40 @@ class MoviePage extends StatelessWidget {
   }
 
   _body() {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: IconTheme(
-              data: IconThemeData(
-              color: Colors.amber,
-              size: 25,
-              ),
-              child: StarDisplay(
-                value: movie.vote_average.toInt(),
+    return
+    Container(
+        alignment: Alignment.bottomCenter,
+        decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage("assets/film.jpeg"),fit: BoxFit.fill)
+        ),
+        padding: EdgeInsets.fromLTRB(65, 15, 65, 0),
+        child: Column(
+          children: <Widget>[
+            Center(
+                child: IconTheme(
+                  data: IconThemeData(
+                    color: Colors.amber,
+                    size: 20,
+                  ),
+                  child: StarDisplay(
+                    value: movie.vote_average.toInt(),
+                  ),
+                )
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Center(
+              child: Text(
+                movie.overview,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
               ),
             )
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          Center(
-            child: Text(
-              movie.overview,
-              style: TextStyle(
-                fontSize: 15,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+          ],
+        ),
+      );
   }
 
   _onClickFavoritar(context) {
